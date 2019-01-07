@@ -2,10 +2,10 @@ require 'spec_helper'
 
 module RSpec::GraphqlMatchers
   describe 'expect(a_type).to have_a_field(field_name)' do
-    subject(:a_type) do
-      GraphQL::ObjectType.define do
-        name 'TestObject'
+    subject(:a_type) { test_object }
 
+    let(:test_object) do
+      class TestObject < GraphQL::Schema::Object
         field :id,
           types.String,
           property: :id_on_model,
@@ -15,7 +15,14 @@ module RSpec::GraphqlMatchers
         field :other,
           !types.ID,
           hash_key: :other_on_hash
+
+        field :resolver_field,
+          resolver: GraphQL::Schema::Resolver
       end
+    end
+
+    let(:resolver_field) do
+      QuestionnaireResource
     end
 
     before do
@@ -25,7 +32,10 @@ module RSpec::GraphqlMatchers
       )
     end
 
-    it { is_expected.to have_a_field(:id) }
+    it 'bhlah' do
+      binding.pry
+      is_expected.to have_a_field(:id)
+    end
 
     it 'passes when the type defines the field' do
       expect(a_type).to have_a_field(:id)
@@ -161,6 +171,20 @@ module RSpec::GraphqlMatchers
             "expected #{a_type.inspect} to define field `id`," \
             " with metadata `#{expected.inspect}`," \
             " but the metadata was `#{actual.inspect}`."
+          )
+      end
+    end
+
+    describe '.with_resolver(resolver_name)' do
+      it { is_expected.to have_a_field(:resolver_field).with_resolver(GraphQL::Schema::Resolver) }
+      it { is_expected.to have_a_field(:resolver_field).with_resolver('GraphQL::Schema::Resolver') }
+
+      it 'fails when the property is incorrect' do
+        expect { expect(a_type).to have_a_field(:resolver_field).with_resolver(:whatever) }
+          .to fail_with(
+            "expected #{a_type.inspect} to define field `resolve`," \
+            ' with resolver `whatever`,' \
+            ' but the resolver was `GraphQL::Schema::Resolver`.'
           )
       end
     end

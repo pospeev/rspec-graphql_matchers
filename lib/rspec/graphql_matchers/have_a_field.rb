@@ -8,10 +8,10 @@ module RSpec
         property: 'reading from the `%s` property',
         hash_key: 'reading from the `%s` hash_key',
         metadata: 'with metadata `%s`',
+        resolver: 'with resolver `%s`',
         mutation: 'with mutation `%s`',
         arguments: 'with arguments `%s`',
         authorize: 'with authorization',
-
       }.freeze
 
       def initialize(expected_field_name, fields = :fields)
@@ -68,6 +68,11 @@ module RSpec
 
       def with_metadata(expected_metadata)
         @expectations << [:metadata, expected_metadata]
+        self
+      end
+
+      def with_resolver(expected_resolver_name)
+        @expectations << [:resolver, expected_resolver_name]
         self
       end
 

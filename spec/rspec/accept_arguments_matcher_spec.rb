@@ -156,10 +156,22 @@ describe 'expect(a_field).to accept_arguments(arg_name: arg_type, ...)' do
       matcher.failure_message
     end
 
-    it 'informs the expected and actual types' do
-      expect(failure_message).to end_with(
-        'to accept arguments will(NotMatch)'
-      )
+    context 'when no actual arguments provided' do
+      it 'informs the expected arguments' do
+        expect(failure_message).to end_with(
+          'to accept arguments will(NotMatch)'
+        )
+      end
+    end
+
+    context 'when actual arguments provided' do
+      let(:actual_args) { { 'id' => double(:field, type: types.String) } }
+
+      it 'informs the expected and actual types' do
+        expect(failure_message).to end_with(
+          'to accept arguments will(NotMatch), actual was id(String)'
+        )
+      end
     end
 
     context 'the field does not respond to #name' do
