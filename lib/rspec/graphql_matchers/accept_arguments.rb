@@ -16,8 +16,13 @@ module RSpec
       end
 
       def failure_message
-        "expected field '#{field_name(actual_field)}' to accept arguments "\
-        "#{describe_arguments(expected_args)}, actual was #{describe_arguments(actual_field.arguments)}"
+        message = "expected field '#{field_name(actual_field)}' to accept arguments #{describe_arguments(expected_args)}"
+
+        unless actual_field.arguments.empty?
+          message += ", actual was #{describe_arguments(actual_field.arguments)}"
+        end
+
+        message
       end
 
       def description
