@@ -11,7 +11,7 @@ module RSpec
         mutation: 'with mutation `%s`',
         arguments: 'with arguments `%s`',
         authorize: 'with authorization',
-
+        resolver: 'with resolver `%s`',
       }.freeze
 
       def initialize(expected_field_name, fields = :fields)
@@ -68,6 +68,11 @@ module RSpec
 
       def with_metadata(expected_metadata)
         @expectations << [:metadata, expected_metadata]
+        self
+      end
+
+      def with_resolver(expected_resolver_name)
+        @expectations << [:resolver, expected_resolver_name]
         self
       end
 
